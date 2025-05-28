@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+    <sp_instance action="DELETE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>4</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">43295ae1094232007f44e1046c8ff615</sp_column>
+        <sp_widget display_value="SPTool Form">441a7ecd832d2210988a7aa6feaad340</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:22:43</sys_created_on>
+        <sys_id>bb797edd8339a610988a7aa6feaad33f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
+        <sys_update_name>sp_instance_bb797edd8339a610988a7aa6feaad33f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:22:43</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="DELETE" query="documentkey=bb797edd8339a610988a7aa6feaad33f"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</application>
+        <file_path/>
+        <instance_id>3852d113ff856254c80bf8e4fc4fd90d</instance_id>
+        <instance_name>dev337789</instance_name>
+        <name>sp_instance_bb797edd8339a610988a7aa6feaad33f</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance"><sp_instance action="INSERT_OR_UPDATE"><active>true</active><class_name/><color>default</color><css/><glyph/><id/><order>4</order><roles/><short_description/><size>md</size><sp_column display_value="1">43295ae1094232007f44e1046c8ff615</sp_column><sp_widget display_value="SPTool Form">441a7ecd832d2210988a7aa6feaad340</sp_widget><sys_class_name>sp_instance</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-05-28 07:22:43</sys_created_on><sys_id>bb797edd8339a610988a7aa6feaad33f</sys_id><sys_mod_count>0</sys_mod_count><sys_name/><sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package><sys_policy/><sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope><sys_update_name>sp_instance_bb797edd8339a610988a7aa6feaad33f</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-05-28 07:22:43</sys_updated_on><title/><url/><widget_parameters/></sp_instance><sys_translated_text action="delete_multiple" query="documentkey=bb797edd8339a610988a7aa6feaad33f"/></record_update>]]></payload>
+        <payload_hash>-1554134251</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>44c5e6fc832dea10988a7aa6feaad3be</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:22:43</sys_created_on>
+        <sys_id>73797edd8339a610988a7aa6feaad342</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19715c5a27b0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:22:43</sys_updated_on>
+        <type>Instance</type>
+        <update_guid>77797edd7439a610d02e9ad1eb3b9d41</update_guid>
+        <update_guid_history>77797edd7439a610d02e9ad1eb3b9d41:-1554134251</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">7cc93add8339a610988a7aa6feaad312</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:23:55</sys_created_on>
+        <sys_db_object display_value="" name="sp_instance">sp_instance</sys_db_object>
+        <sys_id>a026df6d33c44deab9928d8171324f89</sys_id>
+        <sys_metadata>bb797edd8339a610988a7aa6feaad33f</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
+        <sys_scope_delete display_value="">64daa03572704d49a928bf08a985d6f9</sys_scope_delete>
+        <sys_update_name>sp_instance_bb797edd8339a610988a7aa6feaad33f</sys_update_name>
+        <sys_update_version display_value="sp_instance_bb797edd8339a610988a7aa6feaad33f">73797edd8339a610988a7aa6feaad342</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:23:55</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

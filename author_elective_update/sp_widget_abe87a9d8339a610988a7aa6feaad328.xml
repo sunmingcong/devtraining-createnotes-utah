@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="DELETE">
+        <category>custom</category>
+        <client_script><![CDATA[function addAttachmentRow() {
+  const template = document.getElementById('attachmentTemplate');
+  const clone = template.content.cloneNode(true);
+  
+  // 文件选择监听
+  const fileInput = clone.querySelector('.file-input');
+  const fileName = clone.querySelector('.file-name');
+  
+  fileInput.addEventListener('change', function(e) {
+    fileName.textContent = e.target.files[0]?.name || '';
+  });
+
+  document.getElementById('attachmentsContainer').appendChild(clone);
+}
+
+// 初始添加一行
+addAttachmentRow();]]></client_script>
+        <controller_as>c</controller_as>
+        <css>&lt;style&gt;
+.form-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: background 0.3s ease;
+}
+
+.form-group:hover {
+  background: #f1f5f9;
+}
+
+.form-label {
+  min-width: 120px;
+  padding: 8px 12px;
+  margin: 0;
+  background: #e2e8f0;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  border-left: 3px solid #63b3ed;
+}
+
+.form-input {
+  flex: 1;
+  margin-left: 1rem;
+  padding: 0.8rem;
+  border: 2px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+  opacity: 1;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    background: transparent;
+  }
+
+  .form-label {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .form-input {
+    margin-left: 0;
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.form-input[readonly] {
+  background-color: #f8f9fa;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.form-input[readonly]:focus {
+  box-shadow: none;
+  border-color: #e2e8f0;
+}
+
+.required::after {
+  content: "*";
+  color: #e53e3e;
+  margin-left: 4px;
+}
+
+.form-input:required:invalid {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+.attachments-section {
+  margin-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-button:hover {
+  background: #2563eb;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+  background-size: calc((100% - 5*1rem)/6 + 1rem) 100%, 100% 100%;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+}
+
+.grid-col {
+  position: relative;
+  border-right: 1px solid #e2e8f0;
+  padding-right: 1rem;
+  background: rgba(241, 245, 249, 0.3);
+  border-radius: 4px;
+  transition: transform 0.2s;
+  min-width: 150px;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.file-upload {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.upload-text {
+  display: block;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e0;
+  border-radius: 4px;
+  text-align: center;
+  color: #64748b;
+  transition: all 0.3s;
+}
+
+.file-input:focus + .upload-text,
+.file-input:hover + .upload-text {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.file-name {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .grid-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .grid-col {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* 响应式调整 */
+@media (min-width: 1024px) {
+  .grid-row {
+    grid-template-columns: repeat(6, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .grid-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) and (min-width: 480px) {
+  .grid-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-col:last-child {
+    grid-column: span 1;
+  }
+}
+
+.grid-col:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.grid-header {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  font-weight: 600;
+  color: #2d3748;
+  background: #f8fafc;
+  padding: 0.8rem;
+  border-radius: 4px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.grid-container {
+  overflow-x: auto;
+  background: 
+    linear-gradient(90deg, #fff 30%, rgba(255,255,255,0)),
+    linear-gradient(90deg, rgba(255,255,255,0), #fff 70%) 100% 0,
+    radial-gradient(farthest-side at 0% 50%, rgba(0,0,0,.1), transparent),
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.1), transparent);
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 1rem;
+  min-width: 900px; /* 保证最小宽度 */
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: white;
+  transition: transform 0.2s;
+}
+
+.grid-row:hover {
+  transform: translateX(4px);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 文件列特殊处理 */
+.grid-col:last-child {
+  min-width: 200px;
+}
+
+/* 响应式处理 */
+@media (max-width: 1200px) {
+  .grid-header {
+    font-size: 0.9rem;
+  }
+
+  .grid-row {
+    min-width: 800px;
+  }
+}
+
+/* 滚动条样式 */
+.grid-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.grid-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.grid-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.grid-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+&lt;/style&gt;</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Copy of Notes List</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:20:14</sys_created_on>
+        <sys_id>abe87a9d8339a610988a7aa6feaad328</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Copy of Notes List</sys_name>
+        <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
+        <sys_update_name>sp_widget_abe87a9d8339a610988a7aa6feaad328</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:20:14</sys_updated_on>
+        <template><![CDATA[<div class="form-container">
+  <div class="form-group">
+    <label class="form-label">案件番号</label>
+    <input type="text" name="ankenbango" 
+           class="form-input" 
+           readonly>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">申請部署</label>
+    <input type="text" name="shinseibusho" 
+           class="form-input"
+           readonly
+           value="キリンビジネスシステム株式会社基盤統括部マスター標準化グループ">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label required">企画名</label>
+    <input type="text" name="kikakumei" 
+           class="form-input"
+           required>
+  </div>
+
+  <div class="attachments-section">
+    <div class="section-header">
+      <h3>添付ファイル</h3>
+      <button type="button" class="add-button" onclick="addAttachmentRow()">リストに追加</button>
+    </div>
+
+    <!-- 列名 -->
+    <div class="grid-header">
+      <div class="grid-col">項目1<span class="required"></span></div>
+      <div class="grid-col">項目2</div>
+      <div class="grid-col">選択項目</div>
+      <div class="grid-col">日付</div>
+      <div class="grid-col">数値</div>
+      <div class="grid-col">添付ファイル</div>
+    </div>
+
+    <!-- 动态内容容器 -->
+    <div class="grid-container">
+      <div id="attachmentsContainer"></div>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</application>
+        <file_path/>
+        <instance_id>3852d113ff856254c80bf8e4fc4fd90d</instance_id>
+        <instance_name>dev337789</instance_name>
+        <name>sp_widget_abe87a9d8339a610988a7aa6feaad328</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sp_widget"&gt;&lt;sp_widget action="INSERT_OR_UPDATE"&gt;&lt;category&gt;custom&lt;/category&gt;&lt;client_script&gt;&lt;![CDATA[function addAttachmentRow() {
+  const template = document.getElementById('attachmentTemplate');
+  const clone = template.content.cloneNode(true);
+  
+  // 文件选择监听
+  const fileInput = clone.querySelector('.file-input');
+  const fileName = clone.querySelector('.file-name');
+  
+  fileInput.addEventListener('change', function(e) {
+    fileName.textContent = e.target.files[0]?.name || '';
+  });
+
+  document.getElementById('attachmentsContainer').appendChild(clone);
+}
+
+// 初始添加一行
+addAttachmentRow();]]&gt;&lt;/client_script&gt;&lt;controller_as&gt;c&lt;/controller_as&gt;&lt;css&gt;&amp;lt;style&amp;gt;
+.form-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: background 0.3s ease;
+}
+
+.form-group:hover {
+  background: #f1f5f9;
+}
+
+.form-label {
+  min-width: 120px;
+  padding: 8px 12px;
+  margin: 0;
+  background: #e2e8f0;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  border-left: 3px solid #63b3ed;
+}
+
+.form-input {
+  flex: 1;
+  margin-left: 1rem;
+  padding: 0.8rem;
+  border: 2px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+  opacity: 1;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    background: transparent;
+  }
+
+  .form-label {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .form-input {
+    margin-left: 0;
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.form-input[readonly] {
+  background-color: #f8f9fa;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.form-input[readonly]:focus {
+  box-shadow: none;
+  border-color: #e2e8f0;
+}
+
+.required::after {
+  content: "*";
+  color: #e53e3e;
+  margin-left: 4px;
+}
+
+.form-input:required:invalid {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+.attachments-section {
+  margin-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-button:hover {
+  background: #2563eb;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+  background-size: calc((100% - 5*1rem)/6 + 1rem) 100%, 100% 100%;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+}
+
+.grid-col {
+  position: relative;
+  border-right: 1px solid #e2e8f0;
+  padding-right: 1rem;
+  background: rgba(241, 245, 249, 0.3);
+  border-radius: 4px;
+  transition: transform 0.2s;
+  min-width: 150px;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.file-upload {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.upload-text {
+  display: block;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e0;
+  border-radius: 4px;
+  text-align: center;
+  color: #64748b;
+  transition: all 0.3s;
+}
+
+.file-input:focus + .upload-text,
+.file-input:hover + .upload-text {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.file-name {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .grid-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .grid-col {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* 响应式调整 */
+@media (min-width: 1024px) {
+  .grid-row {
+    grid-template-columns: repeat(6, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .grid-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) and (min-width: 480px) {
+  .grid-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-col:last-child {
+    grid-column: span 1;
+  }
+}
+
+.grid-col:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.grid-header {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  font-weight: 600;
+  color: #2d3748;
+  background: #f8fafc;
+  padding: 0.8rem;
+  border-radius: 4px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.grid-container {
+  overflow-x: auto;
+  background: 
+    linear-gradient(90deg, #fff 30%, rgba(255,255,255,0)),
+    linear-gradient(90deg, rgba(255,255,255,0), #fff 70%) 100% 0,
+    radial-gradient(farthest-side at 0% 50%, rgba(0,0,0,.1), transparent),
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.1), transparent);
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 1rem;
+  min-width: 900px; /* 保证最小宽度 */
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: white;
+  transition: transform 0.2s;
+}
+
+.grid-row:hover {
+  transform: translateX(4px);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 文件列特殊处理 */
+.grid-col:last-child {
+  min-width: 200px;
+}
+
+/* 响应式处理 */
+@media (max-width: 1200px) {
+  .grid-header {
+    font-size: 0.9rem;
+  }
+
+  .grid-row {
+    min-width: 800px;
+  }
+}
+
+/* 滚动条样式 */
+.grid-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.grid-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.grid-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.grid-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+&amp;lt;/style&amp;gt;&lt;/css&gt;&lt;data_table&gt;sp_instance&lt;/data_table&gt;&lt;demo_data/&gt;&lt;description/&gt;&lt;docs/&gt;&lt;field_list/&gt;&lt;has_preview&gt;true&lt;/has_preview&gt;&lt;id/&gt;&lt;internal&gt;false&lt;/internal&gt;&lt;link&gt;&lt;![CDATA[function link(scope, element, attrs, controller) {  }]]&gt;&lt;/link&gt;&lt;name&gt;Copy of Notes List&lt;/name&gt;&lt;option_schema/&gt;&lt;public&gt;false&lt;/public&gt;&lt;roles/&gt;&lt;script&gt;&lt;![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */})();]]&gt;&lt;/script&gt;&lt;servicenow&gt;false&lt;/servicenow&gt;&lt;sys_class_name&gt;sp_widget&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2025-05-28 07:20:14&lt;/sys_created_on&gt;&lt;sys_id&gt;abe87a9d8339a610988a7aa6feaad328&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;Copy of Notes List&lt;/sys_name&gt;&lt;sys_package display_value="CreateNotes" source="x_snc_createnotes"&gt;df5fd9a5090232007f44e1046c8ff69f&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="CreateNotes"&gt;df5fd9a5090232007f44e1046c8ff69f&lt;/sys_scope&gt;&lt;sys_update_name&gt;sp_widget_abe87a9d8339a610988a7aa6feaad328&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2025-05-28 07:20:14&lt;/sys_updated_on&gt;&lt;template&gt;&lt;![CDATA[&lt;div class="form-container"&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label class="form-label"&gt;案件番号&lt;/label&gt;
+    &lt;input type="text" name="ankenbango" 
+           class="form-input" 
+           readonly&gt;
+  &lt;/div&gt;
+
+  &lt;div class="form-group"&gt;
+    &lt;label class="form-label"&gt;申請部署&lt;/label&gt;
+    &lt;input type="text" name="shinseibusho" 
+           class="form-input"
+           readonly
+           value="キリンビジネスシステム株式会社基盤統括部マスター標準化グループ"&gt;
+  &lt;/div&gt;
+
+  &lt;div class="form-group"&gt;
+    &lt;label class="form-label required"&gt;企画名&lt;/label&gt;
+    &lt;input type="text" name="kikakumei" 
+           class="form-input"
+           required&gt;
+  &lt;/div&gt;
+
+  &lt;div class="attachments-section"&gt;
+    &lt;div class="section-header"&gt;
+      &lt;h3&gt;添付ファイル&lt;/h3&gt;
+      &lt;button type="button" class="add-button" onclick="addAttachmentRow()"&gt;リストに追加&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 列名 --&gt;
+    &lt;div class="grid-header"&gt;
+      &lt;div class="grid-col"&gt;項目1&lt;span class="required"&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="grid-col"&gt;項目2&lt;/div&gt;
+      &lt;div class="grid-col"&gt;選択項目&lt;/div&gt;
+      &lt;div class="grid-col"&gt;日付&lt;/div&gt;
+      &lt;div class="grid-col"&gt;数値&lt;/div&gt;
+      &lt;div class="grid-col"&gt;添付ファイル&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 动态内容容器 --&gt;
+    &lt;div class="grid-container"&gt;
+      &lt;div id="attachmentsContainer"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+]]&gt;&lt;/template&gt;&lt;/sp_widget&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>1435927574</payload_hash>
+        <record_name>Copy of Notes List</record_name>
+        <reverted_from/>
+        <source>44c5e6fc832dea10988a7aa6feaad3be</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:20:14</sys_created_on>
+        <sys_id>e3e87a9d8339a610988a7aa6feaad32c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19715c35df60000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:20:14</sys_updated_on>
+        <type>Widget</type>
+        <update_guid>e7e87a9d5939a610da34079c73c6802b</update_guid>
+        <update_guid_history>e7e87a9d5939a610da34079c73c6802b:1435927574</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="Copy of Notes List">a48a3e118379a610988a7aa6feaad300</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-05-28 07:27:08</sys_created_on>
+        <sys_db_object display_value="" name="sp_widget">sp_widget</sys_db_object>
+        <sys_id>2536c7bc014f4017b71d751fb3d61481</sys_id>
+        <sys_metadata>abe87a9d8339a610988a7aa6feaad328</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Copy of Notes List</sys_name>
+        <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
+        <sys_scope_delete display_value="">64daa03572704d49a928bf08a985d6f9</sys_scope_delete>
+        <sys_update_name>sp_widget_abe87a9d8339a610988a7aa6feaad328</sys_update_name>
+        <sys_update_version display_value="sp_widget_abe87a9d8339a610988a7aa6feaad328">e3e87a9d8339a610988a7aa6feaad32c</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-05-28 07:27:08</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
